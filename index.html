@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uruk - Healthcare App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="app-title">
+                <h1>Uruk</h1>
+                <span class="tagline">Your Health Companion</span>
+            </div>
+            <div class="profile-icon">
+                <div class="avatar">RK</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        
+        <!-- Dashboard Screen -->
+        <div id="dashboard" class="screen active">
+            <!-- Emergency Quick Actions -->
+            <section class="emergency-actions">
+                <h2>Emergency Actions</h2>
+                <div class="action-buttons">
+                    <button class="btn action-btn emergency" onclick="handleEmergencyCall()">
+                        <span class="icon">📞</span>
+                        Emergency Contacts
+                    </button>
+                    <button class="btn action-btn treatment" onclick="findNearbyTreatment()">
+                        <span class="icon">🏥</span>
+                        Nearby Treatment
+                    </button>
+                    <button class="btn action-btn symptom" onclick="reportSymptom()">
+                        <span class="icon">➕</span>
+                        Report Symptom
+                    </button>
+                </div>
+            </section>
+
+            <!-- Recent Vitals Summary -->
+            <section class="vitals-summary">
+                <h2>Recent Vitals</h2>
+                <div class="vitals-grid">
+                    <div class="vital-card">
+                        <span class="vital-icon">❤️</span>
+                        <div class="vital-info">
+                            <span class="vital-value">72 bpm</span>
+                            <span class="vital-label">Heart Rate</span>
+                        </div>
+                    </div>
+                    <div class="vital-card">
+                        <span class="vital-icon">🩸</span>
+                        <div class="vital-info">
+                            <span class="vital-value">120/80</span>
+                            <span class="vital-label">Blood Pressure</span>
+                        </div>
+                    </div>
+                    <div class="vital-card">
+                        <span class="vital-icon">🌡️</span>
+                        <div class="vital-info">
+                            <span class="vital-value">98.6°F</span>
+                            <span class="vital-label">Temperature</span>
+                        </div>
+                    </div>
+                    <div class="vital-card">
+                        <span class="vital-icon">🫁</span>
+                        <div class="vital-info">
+                            <span class="vital-value">98%</span>
+                            <span class="vital-label">Oxygen</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upcoming Appointments -->
+            <section class="upcoming-appointments">
+                <h2>Upcoming Appointments</h2>
+                <div class="appointment-card">
+                    <div class="appointment-info">
+                        <h3>Dr. Priya Sharma</h3>
+                        <p>Cardiologist</p>
+                        <p>Oct 10, 2025 • 10:00 AM</p>
+                    </div>
+                    <div class="appointment-status confirmed">Confirmed</div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Health Screen -->
+        <div id="health" class="screen">
+            <div class="screen-header">
+                <h2>Health Tracking</h2>
+            </div>
+            
+            <!-- Vitals Input Form -->
+            <section class="vitals-input">
+                <h3>Record Daily Vitals</h3>
+                <form id="vitals-form">
+                    <div class="form-group">
+                        <label class="form-label">Heart Rate (bpm)</label>
+                        <input type="number" class="form-control" id="heartRate" placeholder="e.g., 72">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Blood Pressure (mmHg)</label>
+                        <div class="bp-inputs">
+                            <input type="number" class="form-control" id="systolic" placeholder="Systolic">
+                            <span>/</span>
+                            <input type="number" class="form-control" id="diastolic" placeholder="Diastolic">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Temperature (°F)</label>
+                        <input type="number" step="0.1" class="form-control" id="temperature" placeholder="e.g., 98.6">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Oxygen Saturation (%)</label>
+                        <input type="number" class="form-control" id="oxygen" placeholder="e.g., 98">
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Save Vitals</button>
+                </form>
+            </section>
+
+            <!-- Health Trends Chart -->
+            <section class="health-trends">
+                <h3>Health Trends</h3>
+                <div class="chart-container" style="position: relative; height: 300px;">
+                    <canvas id="healthChart"></canvas>
+                </div>
+            </section>
+        </div>
+
+        <!-- Records Screen -->
+        <div id="records" class="screen">
+            <div class="screen-header">
+                <h2>Medical Records</h2>
+            </div>
+
+            <!-- U-Card Display -->
+            <section class="u-card">
+                <div class="ucard-display">
+                    <div class="ucard-header">
+                        <h3>U-Card</h3>
+                        <span class="card-id">#UK2025001</span>
+                    </div>
+                    <div class="ucard-body">
+                        <div class="patient-info">
+                            <h4>Rajesh Kumar</h4>
+                            <p>Age: 34 | Blood Group: O+</p>
+                            <p>DOB: Jan 15, 1991</p>
+                        </div>
+                        <div class="qr-code">
+                            <div class="qr-placeholder">QR</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Medical Records -->
+            <section class="medical-records">
+                <h3>Medical History</h3>
+                <div class="search-bar">
+                    <input type="text" class="form-control" placeholder="Search medical records..." id="recordSearch">
+                </div>
+                <div class="records-list">
+                    <div class="record-item">
+                        <div class="record-icon">📋</div>
+                        <div class="record-info">
+                            <h4>Blood Test Results</h4>
+                            <p>Dr. Priya Sharma • Sep 15, 2025</p>
+                        </div>
+                        <button class="btn btn--sm btn--outline">View</button>
+                    </div>
+                    <div class="record-item">
+                        <div class="record-icon">💊</div>
+                        <div class="record-info">
+                            <h4>Hypertension Medication</h4>
+                            <p>Dr. Amit Singh • Sep 20, 2025</p>
+                        </div>
+                        <button class="btn btn--sm btn--outline">View</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Doctors Screen -->
+        <div id="doctors" class="screen">
+            <div class="screen-header">
+                <h2>Find Doctors</h2>
+            </div>
+
+            <!-- Search and Filter -->
+            <section class="doctor-search">
+                <div class="search-filters">
+                    <select class="form-control" id="specialtyFilter">
+                        <option value="">All Specialties</option>
+                        <option value="cardiology">Cardiologist</option>
+                        <option value="general">General Physician</option>
+                        <option value="dermatology">Dermatologist</option>
+                    </select>
+                </div>
+            </section>
+
+            <!-- Doctor List -->
+            <section class="doctors-list">
+                <div class="doctor-card">
+                    <div class="doctor-info">
+                        <h3>Dr. Priya Sharma</h3>
+                        <p class="specialty">Cardiologist</p>
+                        <p class="experience">15 years experience</p>
+                        <div class="doctor-meta">
+                            <span class="rating">⭐ 4.8</span>
+                            <span class="distance">📍 1.2 km</span>
+                            <span class="fee">₹800</span>
+                        </div>
+                    </div>
+                    <button class="btn btn--primary btn--sm" onclick="bookAppointment(1)">Book</button>
+                </div>
+                <div class="doctor-card">
+                    <div class="doctor-info">
+                        <h3>Dr. Amit Singh</h3>
+                        <p class="specialty">General Physician</p>
+                        <p class="experience">12 years experience</p>
+                        <div class="doctor-meta">
+                            <span class="rating">⭐ 4.6</span>
+                            <span class="distance">📍 0.8 km</span>
+                            <span class="fee">₹600</span>
+                        </div>
+                    </div>
+                    <button class="btn btn--primary btn--sm" onclick="bookAppointment(2)">Book</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- Pharmacy Screen -->
+        <div id="pharmacy" class="screen">
+            <div class="screen-header">
+                <h2>Pharmacy</h2>
+            </div>
+
+            <!-- Medicine Search -->
+            <section class="medicine-search">
+                <div class="search-bar">
+                    <input type="text" class="form-control" placeholder="Search medicines..." id="medicineSearch">
+                </div>
+            </section>
+
+            <!-- Medicine List -->
+            <section class="medicines-list">
+                <div class="medicine-card">
+                    <div class="medicine-info">
+                        <h3>Paracetamol 500mg</h3>
+                        <p>Pain Relief • Cipla</p>
+                        <p class="price">₹25</p>
+                    </div>
+                    <button class="btn btn--primary btn--sm" onclick="addToCart(1)">Add to Cart</button>
+                </div>
+                <div class="medicine-card">
+                    <div class="medicine-info">
+                        <h3>Amoxicillin 250mg</h3>
+                        <p>Antibiotic • Sun Pharma</p>
+                        <p class="price">₹85</p>
+                    </div>
+                    <button class="btn btn--primary btn--sm" onclick="addToCart(2)">Add to Cart</button>
+                </div>
+            </section>
+
+            <!-- Nearby Pharmacies -->
+            <section class="nearby-pharmacies">
+                <h3>Nearby Pharmacies</h3>
+                <div class="pharmacy-card">
+                    <div class="pharmacy-info">
+                        <h4>HealthPlus Pharmacy</h4>
+                        <p>📍 0.5 km • Open</p>
+                        <div class="stock-status">
+                            <span class="stock in-stock">Paracetamol: In Stock</span>
+                            <span class="stock low-stock">Amoxicillin: Low Stock</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" data-screen="dashboard">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">Home</span>
+        </button>
+        <button class="nav-item" data-screen="health">
+            <span class="nav-icon">❤️</span>
+            <span class="nav-label">Health</span>
+        </button>
+        <button class="nav-item" data-screen="records">
+            <span class="nav-icon">📄</span>
+            <span class="nav-label">Records</span>
+        </button>
+        <button class="nav-item" data-screen="doctors">
+            <span class="nav-icon">👨‍⚕️</span>
+            <span class="nav-label">Doctors</span>
+        </button>
+        <button class="nav-item" data-screen="pharmacy">
+            <span class="nav-icon">💊</span>
+            <span class="nav-label">Pharmacy</span>
+        </button>
+    </nav>
+
+    <!-- Modals and overlays -->
+    <div id="appointmentModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Book Appointment</h3>
+                <button class="modal-close" onclick="closeModal('appointmentModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="appointmentForm">
+                    <div class="form-group">
+                        <label class="form-label">Select Date</label>
+                        <input type="date" class="form-control" id="appointmentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Select Time</label>
+                        <select class="form-control" id="appointmentTime" required>
+                            <option value="">Choose time slot</option>
+                            <option value="09:00">9:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="15:00">3:00 PM</option>
+                            <option value="16:00">4:00 PM</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Book Appointment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="emergencyModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Emergency Contacts</h3>
+                <button class="modal-close" onclick="closeModal('emergencyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="emergency-contacts">
+                    <div class="emergency-contact">
+                        <span class="contact-name">Dr. Sarah Patel</span>
+                        <button class="btn btn--primary" onclick="callContact('Dr. Sarah Patel')">Call</button>
+                    </div>
+                    <div class="emergency-contact">
+                        <span class="contact-name">Family Doctor</span>
+                        <button class="btn btn--primary" onclick="callContact('Family Doctor')">Call</button>
+                    </div>
+                    <div class="emergency-contact">
+                        <span class="contact-name">Emergency Services</span>
+                        <button class="btn btn--primary" onclick="callContact('Emergency Services')">Call</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="message-container hidden">
+        <div id="messageContent" class="message"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
